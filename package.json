@@ -7,13 +7,19 @@
     "start": "node server.js",
     "dev": "node server.js"
   },
-  "keywords": ["manufacturing", "tracking", "inventory", "production"],
+  "keywords": [
+    "manufacturing",
+    "tracking",
+    "inventory",
+    "production"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2",
-    "mongodb": "^6.3.0",
+    "@ngneat/falso": "^8.0.2",
+    "body-parser": "^1.20.2",
     "cors": "^2.8.5",
-    "body-parser": "^1.20.2"
+    "express": "^4.18.2",
+    "mongodb": "^6.3.0"
   }
 }

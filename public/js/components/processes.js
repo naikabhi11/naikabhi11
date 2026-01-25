@@ -142,21 +142,80 @@ const Processes = {
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Input Materials (JSON format)</label>
-                    <textarea class="form-textarea" id="process-materials" placeholder='[{"materialName": "Steel", "quantity": 10, "unit": "kg"}]'></textarea>
-                    <small style="color: var(--text-muted);">Enter as JSON array with materialName, quantity, and unit</small>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <label class="form-label" style="margin: 0;">Input Materials</label>
+                        <button type="button" class="btn btn-sm btn-primary" onclick="Processes.addMaterialRow()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Add Material
+                        </button>
+                    </div>
+                    <div id="materials-container"></div>
                 </div>
             </form>
         `;
 
         App.showModal('Add Manufacturing Process', content, () => this.saveProcess());
+
+        // Add first material row by default
+        setTimeout(() => this.addMaterialRow(), 100);
+    },
+
+    addMaterialRow(material = null) {
+        const container = document.getElementById('materials-container');
+        if (!container) return;
+
+        const rowId = `material-row-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+        const row = document.createElement('div');
+        row.id = rowId;
+        row.className = 'material-row';
+        row.style.cssText = 'display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 0.5rem; margin-bottom: 0.75rem; align-items: end;';
+
+        row.innerHTML = `
+            <div class="form-group" style="margin: 0;">
+                <label class="form-label" style="font-size: 0.85rem;">Material Name</label>
+                <input type="text" class="form-input material-name" value="${material?.materialName || ''}" placeholder="e.g., Steel Sheet" required>
+            </div>
+            <div class="form-group" style="margin: 0;">
+                <label class="form-label" style="font-size: 0.85rem;">Quantity</label>
+                <input type="number" class="form-input material-quantity" value="${material?.quantity || ''}" min="0" step="0.01" placeholder="10" required>
+            </div>
+            <div class="form-group" style="margin: 0;">
+                <label class="form-label" style="font-size: 0.85rem;">Unit</label>
+                <select class="form-select material-unit">
+                    <option value="kg" ${material?.unit === 'kg' ? 'selected' : ''}>kg</option>
+                    <option value="lbs" ${material?.unit === 'lbs' ? 'selected' : ''}>lbs</option>
+                    <option value="pcs" ${material?.unit === 'pcs' ? 'selected' : ''}>pcs</option>
+                    <option value="m" ${material?.unit === 'm' ? 'selected' : ''}>m</option>
+                    <option value="L" ${material?.unit === 'L' ? 'selected' : ''}>L</option>
+                    <option value="ft" ${material?.unit === 'ft' ? 'selected' : ''}>ft</option>
+                    <option value="gal" ${material?.unit === 'gal' ? 'selected' : ''}>gal</option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-sm btn-danger" onclick="Processes.removeMaterialRow('${rowId}')" style="margin-bottom: 0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        `;
+
+        container.appendChild(row);
+    },
+
+    removeMaterialRow(rowId) {
+        const row = document.getElementById(rowId);
+        if (row) {
+            row.remove();
+        }
     },
 
     showEditModal(id) {
         const process = this.processes.find(p => p._id === id);
         if (!process) return;
-
-        const materialsJSON = JSON.stringify(process.inputMaterials || [], null, 2);
 
         const content = `
             <form id="process-form">
@@ -183,29 +242,54 @@ const Processes = {
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Input Materials (JSON format)</label>
-                    <textarea class="form-textarea" id="process-materials">${materialsJSON}</textarea>
-                    <small style="color: var(--text-muted);">Enter as JSON array with materialName, quantity, and unit</small>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <label class="form-label" style="margin: 0;">Input Materials</label>
+                        <button type="button" class="btn btn-sm btn-primary" onclick="Processes.addMaterialRow()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Add Material
+                        </button>
+                    </div>
+                    <div id="materials-container"></div>
                 </div>
             </form>
         `;
 
         App.showModal('Edit Manufacturing Process', content, () => this.saveProcess());
+
+        // Add existing materials
+        setTimeout(() => {
+            const materials = process.inputMaterials || [];
+            if (materials.length > 0) {
+                materials.forEach(material => this.addMaterialRow(material));
+            } else {
+                this.addMaterialRow();
+            }
+        }, 100);
     },
 
     async saveProcess() {
         const id = document.getElementById('process-id')?.value;
 
-        let inputMaterials = [];
-        try {
-            const materialsText = document.getElementById('process-materials').value.trim();
-            if (materialsText) {
-                inputMaterials = JSON.parse(materialsText);
+        // Collect materials from dynamic form
+        const inputMaterials = [];
+        const materialRows = document.querySelectorAll('.material-row');
+
+        materialRows.forEach(row => {
+            const name = row.querySelector('.material-name')?.value.trim();
+            const quantity = parseFloat(row.querySelector('.material-quantity')?.value);
+            const unit = row.querySelector('.material-unit')?.value;
+
+            if (name && quantity && unit) {
+                inputMaterials.push({
+                    materialName: name,
+                    quantity: quantity,
+                    unit: unit
+                });
             }
-        } catch (e) {
-            App.showNotification('Invalid JSON format for input materials', 'danger');
-            return;
-        }
+        });
 
         const data = {
             name: document.getElementById('process-name').value,
