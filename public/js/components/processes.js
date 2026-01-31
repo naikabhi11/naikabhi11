@@ -48,10 +48,6 @@ const Processes = {
         if (this.processes.length === 0) {
             listContainer.innerHTML = `
                 <div class="empty-state">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <path d="M12 1v6m0 6v6"></path>
-                    </svg>
                     <h3>No Processes Defined</h3>
                     <p>Create your first manufacturing process template</p>
                 </div>
@@ -60,7 +56,7 @@ const Processes = {
         }
 
         listContainer.innerHTML = `
-            <div style="display: grid; gap: 1.5rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
                 ${this.processes.map(process => this.renderProcessCard(process)).join('')}
             </div>
         `;
@@ -71,47 +67,36 @@ const Processes = {
         const duration = process.estimatedDuration || 'N/A';
 
         return `
-            <div class="card" style="margin: 0;">
-                <div class="card-header">
-                    <div>
-                        <h3 style="margin: 0; font-size: 1.25rem;">${process.name}</h3>
-                        <p style="margin: 0.25rem 0 0; color: var(--text-secondary); font-size: 0.9rem;">
+            <div class="card" style="margin: 0; display: flex; flex-direction: column;">
+                <div class="card-header" style="align-items: flex-start; margin-bottom: 24px;">
+                    <div style="flex: 1;">
+                        <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700;">${process.name}</h3>
+                        <p style="margin: 4px 0 0; color: var(--text-tertiary); font-size: 0.85rem; line-height: 1.4;">
                             ${process.description || 'No description'}
                         </p>
                     </div>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <button class="btn btn-sm btn-secondary" onclick="Processes.showEditModal('${process._id}')">
-                            Edit
-                        </button>
-                        <button class="btn btn-sm btn-danger" onclick="Processes.deleteProcess('${process._id}')">
-                            Delete
-                        </button>
-                    </div>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                    <div>
-                        <h4 style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Input Materials</h4>
-                        ${inputMaterials.length > 0 ? `
-                            <ul style="margin: 0; padding-left: 1.25rem;">
-                                ${inputMaterials.map(m => `
-                                    <li style="margin-bottom: 0.5rem;">
-                                        ${m.materialName}: ${m.quantity} ${m.unit}
-                                    </li>
-                                `).join('')}
-                            </ul>
-                        ` : '<p style="color: var(--text-muted);">No materials specified</p>'}
+                <div style="flex: 1; margin-bottom: 24px;">
+                    <h4 style="font-size: 0.75rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">Input Materials</h4>
+                    ${inputMaterials.length > 0 ? `
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                            ${inputMaterials.map(m => `
+                                <span class="badge" style="background: var(--bg-glass); border: 1px solid var(--border-glass); color: var(--text-secondary);">
+                                    ${m.materialName} • ${m.quantity} ${m.unit}
+                                </span>
+                            `).join('')}
+                        </div>
+                    ` : '<p style="color: var(--text-tertiary); font-size: 0.85rem;">No materials specified</p>'}
+                </div>
+                
+                <div style="padding-top: 20px; border-top: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                        <span style="color: var(--text-tertiary);">Output:</span> ${process.outputProduct || '—'}
                     </div>
-                    
-                    <div>
-                        <h4 style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Process Details</h4>
-                        <p style="margin: 0 0 0.5rem;"><strong>Output:</strong> ${process.outputProduct || 'Not specified'}</p>
-                        <p style="margin: 0 0 0.5rem;"><strong>Duration:</strong> ${duration} hours</p>
-                        <p style="margin: 0;"><strong>Status:</strong> 
-                            <span class="badge badge-${process.status === 'active' ? 'success' : 'info'}">
-                                ${process.status || 'active'}
-                            </span>
-                        </p>
+                    <div class="flex gap-1">
+                        <button class="btn btn-secondary" style="padding: 4px 10px;" onclick="Processes.showEditModal('${process._id}')">Edit</button>
+                        <button class="btn btn-danger" style="padding: 4px 10px; background: rgba(255, 59, 48, 0.1); color: var(--accent-danger);" onclick="Processes.deleteProcess('${process._id}')">Delete</button>
                     </div>
                 </div>
             </div>
@@ -122,34 +107,32 @@ const Processes = {
         const content = `
             <form id="process-form">
                 <div class="form-group">
-                    <label class="form-label">Process Name *</label>
-                    <input type="text" class="form-input" id="process-name" required>
+                    <label class="form-label">Process Name</label>
+                    <input type="text" class="form-input" id="process-name" placeholder="e.g. CNC Milling Phase 1" required>
                 </div>
                 
                 <div class="form-group">
                     <label class="form-label">Description</label>
-                    <textarea class="form-textarea" id="process-description"></textarea>
+                    <textarea class="form-textarea" id="process-description" placeholder="Describe the workflow steps..." style="min-height: 80px;"></textarea>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label class="form-label">Output Product</label>
+                        <input type="text" class="form-input" id="process-output" placeholder="e.g. Machined Housing" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Est. Duration (hrs)</label>
+                        <input type="number" class="form-input" id="process-duration" min="0" step="0.5" placeholder="2.5">
+                    </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Output Product *</label>
-                    <input type="text" class="form-input" id="process-output" required>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Estimated Duration (hours)</label>
-                    <input type="number" class="form-input" id="process-duration" min="0" step="0.5">
-                </div>
-                
-                <div class="form-group">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                         <label class="form-label" style="margin: 0;">Input Materials</label>
-                        <button type="button" class="btn btn-sm btn-primary" onclick="Processes.addMaterialRow()">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="12" y1="5" x2="12" y2="19"></line>
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                            </svg>
-                            Add Material
+                        <button type="button" class="btn btn-secondary" style="font-size: 0.75rem; padding: 4px 8px;" onclick="Processes.addMaterialRow()">
+                            + Add Material
                         </button>
                     </div>
                     <div id="materials-container"></div>
@@ -158,8 +141,6 @@ const Processes = {
         `;
 
         App.showModal('Add Manufacturing Process', content, () => this.saveProcess());
-
-        // Add first material row by default
         setTimeout(() => this.addMaterialRow(), 100);
     },
 
@@ -168,38 +149,28 @@ const Processes = {
         if (!container) return;
 
         const rowId = `material-row-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
         const row = document.createElement('div');
         row.id = rowId;
         row.className = 'material-row';
-        row.style.cssText = 'display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 0.5rem; margin-bottom: 0.75rem; align-items: end;';
+        row.style.cssText = 'display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; margin-bottom: 12px; align-items: flex-end;';
 
         row.innerHTML = `
-            <div class="form-group" style="margin: 0;">
-                <label class="form-label" style="font-size: 0.85rem;">Material Name</label>
-                <input type="text" class="form-input material-name" value="${material?.materialName || ''}" placeholder="e.g., Steel Sheet" required>
+            <div>
+                <input type="text" class="form-input material-name" value="${material?.materialName || ''}" placeholder="Material" style="padding: 8px;" required>
             </div>
-            <div class="form-group" style="margin: 0;">
-                <label class="form-label" style="font-size: 0.85rem;">Quantity</label>
-                <input type="number" class="form-input material-quantity" value="${material?.quantity || ''}" min="0" step="0.01" placeholder="10" required>
+            <div>
+                <input type="number" class="form-input material-quantity" value="${material?.quantity || ''}" min="0" step="0.01" placeholder="Qty" style="padding: 8px;" required>
             </div>
-            <div class="form-group" style="margin: 0;">
-                <label class="form-label" style="font-size: 0.85rem;">Unit</label>
-                <select class="form-select material-unit">
+            <div>
+                <select class="form-select material-unit" style="padding: 8px;">
                     <option value="kg" ${material?.unit === 'kg' ? 'selected' : ''}>kg</option>
-                    <option value="lbs" ${material?.unit === 'lbs' ? 'selected' : ''}>lbs</option>
                     <option value="pcs" ${material?.unit === 'pcs' ? 'selected' : ''}>pcs</option>
                     <option value="m" ${material?.unit === 'm' ? 'selected' : ''}>m</option>
                     <option value="L" ${material?.unit === 'L' ? 'selected' : ''}>L</option>
-                    <option value="ft" ${material?.unit === 'ft' ? 'selected' : ''}>ft</option>
-                    <option value="gal" ${material?.unit === 'gal' ? 'selected' : ''}>gal</option>
                 </select>
             </div>
-            <button type="button" class="btn btn-sm btn-danger" onclick="Processes.removeMaterialRow('${rowId}')" style="margin-bottom: 0;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
+            <button type="button" class="modal-close" onclick="Processes.removeMaterialRow('${rowId}')" style="background: rgba(255,59,48,0.1); color: var(--accent-danger); border-radius: 8px;">
+                ×
             </button>
         `;
 
@@ -222,34 +193,32 @@ const Processes = {
                 <input type="hidden" id="process-id" value="${process._id}">
                 
                 <div class="form-group">
-                    <label class="form-label">Process Name *</label>
+                    <label class="form-label">Process Name</label>
                     <input type="text" class="form-input" id="process-name" value="${process.name}" required>
                 </div>
                 
                 <div class="form-group">
                     <label class="form-label">Description</label>
-                    <textarea class="form-textarea" id="process-description">${process.description || ''}</textarea>
+                    <textarea class="form-textarea" id="process-description" style="min-height: 80px;">${process.description || ''}</textarea>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label class="form-label">Output Product</label>
+                        <input type="text" class="form-input" id="process-output" value="${process.outputProduct || ''}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Est. Duration (hrs)</label>
+                        <input type="number" class="form-input" id="process-duration" value="${process.estimatedDuration || ''}" min="0" step="0.5">
+                    </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Output Product *</label>
-                    <input type="text" class="form-input" id="process-output" value="${process.outputProduct || ''}" required>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Estimated Duration (hours)</label>
-                    <input type="number" class="form-input" id="process-duration" value="${process.estimatedDuration || ''}" min="0" step="0.5">
-                </div>
-                
-                <div class="form-group">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                         <label class="form-label" style="margin: 0;">Input Materials</label>
-                        <button type="button" class="btn btn-sm btn-primary" onclick="Processes.addMaterialRow()">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="12" y1="5" x2="12" y2="19"></line>
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                            </svg>
-                            Add Material
+                        <button type="button" class="btn btn-secondary" style="font-size: 0.75rem; padding: 4px 8px;" onclick="Processes.addMaterialRow()">
+                            + Add Material
                         </button>
                     </div>
                     <div id="materials-container"></div>
@@ -259,7 +228,6 @@ const Processes = {
 
         App.showModal('Edit Manufacturing Process', content, () => this.saveProcess());
 
-        // Add existing materials
         setTimeout(() => {
             const materials = process.inputMaterials || [];
             if (materials.length > 0) {

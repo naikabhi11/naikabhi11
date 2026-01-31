@@ -75,23 +75,30 @@ const App = {
     },
 
     showNotification(message, type = 'info') {
-        // Simple notification system
         const notification = document.createElement('div');
         notification.className = `alert alert-${type}`;
-        notification.textContent = message;
+        notification.innerHTML = `
+            <div style="flex: 1;">${message}</div>
+            <button onclick="this.parentElement.remove()" style="background:none; border:none; color:inherit; cursor:pointer; font-size:1.2rem; line-height:1; padding-left:12px;">×</button>
+        `;
         notification.style.position = 'fixed';
-        notification.style.top = '20px';
-        notification.style.right = '20px';
+        notification.style.bottom = '24px';
+        notification.style.right = '24px';
         notification.style.zIndex = '10000';
-        notification.style.minWidth = '300px';
+        notification.style.minWidth = '320px';
+        notification.style.backdropFilter = 'blur(20px)';
+        notification.style.webkitBackdropFilter = 'blur(20px)';
+        notification.style.boxShadow = 'var(--shadow-float)';
+        notification.style.animation = 'modalAppear 0.4s var(--transition)';
 
         document.body.appendChild(notification);
 
         setTimeout(() => {
             notification.style.opacity = '0';
-            notification.style.transition = 'opacity 0.3s';
-            setTimeout(() => notification.remove(), 300);
-        }, 3000);
+            notification.style.transform = 'translateY(10px)';
+            notification.style.transition = 'all 0.4s var(--transition)';
+            setTimeout(() => notification.remove(), 400);
+        }, 4000);
     },
 
     // Modal Helper

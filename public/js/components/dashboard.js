@@ -66,62 +66,54 @@ const Dashboard = {
         statsContainer.innerHTML = `
             <div class="stat-card">
                 <div class="stat-header">
-                    <div>
-                        <div class="stat-value">${stats.rawMaterialsCount}</div>
-                        <div class="stat-label">Raw Materials</div>
-                    </div>
                     <div class="stat-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                         </svg>
                     </div>
+                    ${stats.lowStockCount > 0 ? `<div class="badge badge-warning">${stats.lowStockCount} Low</div>` : ''}
                 </div>
-                ${stats.lowStockCount > 0 ? `<div class="badge badge-warning">⚠️ ${stats.lowStockCount} Low Stock</div>` : ''}
+                <div class="stat-value">${stats.rawMaterialsCount}</div>
+                <div class="stat-label">Raw Materials</div>
             </div>
             
             <div class="stat-card">
                 <div class="stat-header">
-                    <div>
-                        <div class="stat-value">${stats.wipCount}</div>
-                        <div class="stat-label">In Production</div>
-                    </div>
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <div class="stat-icon" style="color: var(--accent-secondary)">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                         </svg>
                     </div>
                 </div>
+                <div class="stat-value">${stats.wipCount}</div>
+                <div class="stat-label">In Production</div>
             </div>
             
             <div class="stat-card">
                 <div class="stat-header">
-                    <div>
-                        <div class="stat-value">${stats.finishedProductsCount}</div>
-                        <div class="stat-label">Finished Products</div>
-                    </div>
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <div class="stat-icon" style="color: var(--accent-success)">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="12" cy="12" r="10"></circle>
                             <path d="M12 6v6l4 2"></path>
                         </svg>
                     </div>
                 </div>
+                <div class="stat-value">${stats.finishedProductsCount}</div>
+                <div class="stat-label">Finished Products</div>
             </div>
             
             <div class="stat-card">
                 <div class="stat-header">
-                    <div>
-                        <div class="stat-value">${stats.qualityPassRate}%</div>
-                        <div class="stat-label">Quality Pass Rate</div>
-                    </div>
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <div class="stat-icon" style="color: var(--accent-warning)">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                             <polyline points="22 4 12 14.01 9 11.01"></polyline>
                         </svg>
                     </div>
+                    ${stats.qualityIssuesCount > 0 ? `<div class="badge badge-danger">${stats.qualityIssuesCount} Issues</div>` : ''}
                 </div>
-                ${stats.qualityIssuesCount > 0 ? `<div class="badge badge-danger">⚠️ ${stats.qualityIssuesCount} Issues</div>` : ''}
+                <div class="stat-value">${stats.qualityPassRate}%</div>
+                <div class="stat-label">Quality Pass Rate</div>
             </div>
         `;
     },
@@ -140,11 +132,6 @@ const Dashboard = {
         if (stages.length === 0) {
             pipelineContainer.innerHTML = `
                 <div class="empty-state">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
                     <h3>No Active Production</h3>
                     <p>Start a new production batch to see the pipeline</p>
                 </div>
@@ -153,16 +140,16 @@ const Dashboard = {
         }
 
         pipelineContainer.innerHTML = `
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
                 ${stages.map(([stage, count]) => `
-                    <div style="text-align: center; padding: 1.5rem; background: rgba(102, 126, 234, 0.1); border-radius: 12px;">
-                        <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">${count}</div>
-                        <div style="color: var(--text-secondary); text-transform: capitalize;">${stage}</div>
+                    <div style="padding: 20px; background: var(--bg-glass); border-radius: var(--radius-inner); border: 1px solid var(--border-glass);">
+                        <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 4px;">${count}</div>
+                        <div style="color: var(--text-tertiary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em;">${stage}</div>
                     </div>
                 `).join('')}
             </div>
             
-            <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(75, 174, 254, 0.1); border-radius: 12px; border-left: 4px solid #4facfe;">
+            <div style="margin-top: 24px; padding: 16px; background: rgba(0, 122, 255, 0.05); border-radius: 12px; border: 1px solid rgba(0, 122, 255, 0.1); font-size: 0.9rem; color: var(--text-secondary);">
                 <strong>Production Summary:</strong> ${production.activeProduction} active batches, ${production.completedToday} completed today
             </div>
         `;
@@ -182,7 +169,6 @@ const Dashboard = {
         if (stats.lowStockCount > 0) {
             alerts.push({
                 type: 'warning',
-                icon: '⚠️',
                 title: 'Low Stock Alert',
                 message: `${stats.lowStockCount} raw materials are below minimum stock level`,
                 items: stats.lowStockMaterials
@@ -192,7 +178,6 @@ const Dashboard = {
         if (stats.qualityIssuesCount > 0) {
             alerts.push({
                 type: 'danger',
-                icon: '❌',
                 title: 'Quality Issues',
                 message: `${stats.qualityIssuesCount} quality check failures detected`,
                 items: []
@@ -202,10 +187,6 @@ const Dashboard = {
         if (alerts.length === 0) {
             alertsContainer.innerHTML = `
                 <div class="alert alert-info">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                    </svg>
                     <span>All systems operational. No alerts at this time.</span>
                 </div>
             `;
@@ -214,16 +195,13 @@ const Dashboard = {
 
         alertsContainer.innerHTML = alerts.map(alert => `
             <div class="alert alert-${alert.type}">
-                <div>
-                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-                        <span style="font-size: 1.25rem;">${alert.icon}</span>
-                        <strong>${alert.title}</strong>
-                    </div>
-                    <p style="margin: 0;">${alert.message}</p>
+                <div style="flex: 1;">
+                    <strong style="display: block; margin-bottom: 4px;">${alert.title}</strong>
+                    <p style="margin: 0; font-size: 0.85rem; opacity: 0.9;">${alert.message}</p>
                     ${alert.items && alert.items.length > 0 ? `
-                        <ul style="margin: 0.5rem 0 0 1.5rem; padding: 0;">
-                            ${alert.items.map(item => `<li>${item.name} (${item.quantity} ${item.unit})</li>`).join('')}
-                        </ul>
+                        <div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px;">
+                            ${alert.items.map(item => `<span class="badge" style="background: rgba(255,255,255,0.1); color: inherit;">${item.name} (${item.quantity})</span>`).join('')}
+                        </div>
                     ` : ''}
                 </div>
             </div>

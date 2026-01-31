@@ -47,91 +47,105 @@ const Reports = {
                     <h3 class="card-title">Key Performance Indicators</h3>
                 </div>
                 <div class="stats-grid" style="margin: 0;">
-                    <div style="text-align: center; padding: 1.5rem; background: rgba(102, 126, 234, 0.1); border-radius: 12px;">
-                        <div style="font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem;">${this.dashboardData.qualityPassRate}%</div>
-                        <div style="color: var(--text-secondary);">Quality Pass Rate</div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon" style="color: var(--accent-success)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
+                        </div>
+                        <div class="stat-value">${this.dashboardData.qualityPassRate}%</div>
+                        <div class="stat-label">Quality Pass Rate</div>
                     </div>
-                    <div style="text-align: center; padding: 1.5rem; background: rgba(75, 174, 254, 0.1); border-radius: 12px;">
-                        <div style="font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem;">${this.productionData.activeProduction}</div>
-                        <div style="color: var(--text-secondary);">Active Production</div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon" style="color: var(--accent-primary)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div>
+                        </div>
+                        <div class="stat-value">${this.productionData.activeProduction}</div>
+                        <div class="stat-label">Active Production</div>
                     </div>
-                    <div style="text-align: center; padding: 1.5rem; background: rgba(240, 147, 251, 0.1); border-radius: 12px;">
-                        <div style="font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem;">${this.productionData.completedToday}</div>
-                        <div style="color: var(--text-secondary);">Completed Today</div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon" style="color: var(--accent-secondary)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+                        </div>
+                        <div class="stat-value">${this.productionData.completedToday}</div>
+                        <div class="stat-label">Completed Today</div>
                     </div>
-                    <div style="text-align: center; padding: 1.5rem; background: rgba(254, 225, 64, 0.1); border-radius: 12px;">
-                        <div style="font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem;">${this.productionData.averageProgress}%</div>
-                        <div style="color: var(--text-secondary);">Avg. Progress</div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon" style="color: var(--accent-warning)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg></div>
+                        </div>
+                        <div class="stat-value">${this.productionData.averageProgress}%</div>
+                        <div class="stat-label">Avg. Progress</div>
                     </div>
                 </div>
             </div>
             
-            <!-- Production Analysis -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Production Analysis</h3>
-                </div>
-                <div>
-                    <h4 style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 1rem;">Work in Progress by Stage</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <!-- Production Analysis -->
+                <div class="card" style="margin: 0;">
+                    <div class="card-header">
+                        <h3 class="card-title">Production Stages</h3>
+                    </div>
                     ${this.renderWIPByStage()}
+                </div>
+
+                <!-- Quality & Alerts Summary -->
+                <div class="card" style="margin: 0;">
+                    <div class="card-header">
+                        <h3 class="card-title">Health Overview</h3>
+                    </div>
+                    <div style="display: grid; gap: 12px;">
+                        <div style="padding: 16px; background: rgba(52, 199, 89, 0.05); border-radius: 12px; border-left: 4px solid var(--accent-success);">
+                            <div style="font-size: 0.8rem; color: var(--text-tertiary); text-transform: uppercase;">Pass Rate</div>
+                            <div style="font-size: 1.25rem; font-weight: 700; color: var(--accent-success);">${this.dashboardData.qualityPassRate}%</div>
+                        </div>
+                        <div style="padding: 16px; background: rgba(255, 59, 48, 0.05); border-radius: 12px; border-left: 4px solid var(--accent-danger);">
+                            <div style="font-size: 0.8rem; color: var(--text-tertiary); text-transform: uppercase;">Quality Issues</div>
+                            <div style="font-size: 1.25rem; font-weight: 700; color: var(--accent-danger);">${this.dashboardData.qualityIssuesCount} Active</div>
+                        </div>
+                        <div style="padding: 16px; background: rgba(255, 149, 0, 0.05); border-radius: 12px; border-left: 4px solid var(--accent-warning);">
+                            <div style="font-size: 0.8rem; color: var(--text-tertiary); text-transform: uppercase;">Stock Alerts</div>
+                            <div style="font-size: 1.25rem; font-weight: 700; color: var(--accent-warning);">${this.dashboardData.lowStockCount} Low Level</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
             <!-- Inventory Analysis -->
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Inventory Analysis</h3>
+                    <h3 class="card-title">Inventory Insights</h3>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
                     <div>
-                        <h4 style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 1rem;">Raw Materials</h4>
-                        <div style="padding: 1.5rem; background: rgba(102, 126, 234, 0.1); border-radius: 12px; margin-bottom: 1rem;">
-                            <div style="font-size: 1.75rem; font-weight: 700;">$${this.inventoryData.totalRawMaterialValue}</div>
-                            <div style="color: var(--text-secondary); font-size: 0.9rem;">Total Value</div>
-                        </div>
-                        <div style="padding: 1.5rem; background: rgba(75, 174, 254, 0.1); border-radius: 12px;">
-                            <div style="font-size: 1.75rem; font-weight: 700;">${this.inventoryData.rawMaterialTypes}</div>
-                            <div style="color: var(--text-secondary); font-size: 0.9rem;">Material Types</div>
+                        <h4 style="font-size: 0.85rem; color: var(--text-tertiary); text-transform: uppercase; margin-bottom: 16px;">Raw Materials</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div style="padding: 20px; background: var(--bg-glass); border-radius: 16px; border: 1px solid var(--border-glass);">
+                                <div style="font-size: 1.5rem; font-weight: 700;">$${this.inventoryData.totalRawMaterialValue.toLocaleString()}</div>
+                                <div style="color: var(--text-tertiary); font-size: 0.8rem;">Total Value</div>
+                            </div>
+                            <div style="padding: 20px; background: var(--bg-glass); border-radius: 16px; border: 1px solid var(--border-glass);">
+                                <div style="font-size: 1.5rem; font-weight: 700;">${this.inventoryData.rawMaterialTypes}</div>
+                                <div style="color: var(--text-tertiary); font-size: 0.8rem;">Types</div>
+                            </div>
                         </div>
                     </div>
                     
                     <div>
-                        <h4 style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 1rem;">Finished Products</h4>
-                        <div style="padding: 1.5rem; background: rgba(240, 147, 251, 0.1); border-radius: 12px; margin-bottom: 1rem;">
-                            <div style="font-size: 1.75rem; font-weight: 700;">${this.inventoryData.totalFinishedProducts}</div>
-                            <div style="color: var(--text-secondary); font-size: 0.9rem;">Total Units</div>
-                        </div>
-                        <div style="padding: 1.5rem; background: rgba(254, 225, 64, 0.1); border-radius: 12px;">
-                            <div style="font-size: 1.75rem; font-weight: 700;">${this.inventoryData.finishedProductTypes}</div>
-                            <div style="color: var(--text-secondary); font-size: 0.9rem;">Product Types</div>
+                        <h4 style="font-size: 0.85rem; color: var(--text-tertiary); text-transform: uppercase; margin-bottom: 16px;">Finished Products</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div style="padding: 20px; background: var(--bg-glass); border-radius: 16px; border: 1px solid var(--border-glass);">
+                                <div style="font-size: 1.5rem; font-weight: 700;">${this.inventoryData.totalFinishedProducts}</div>
+                                <div style="color: var(--text-tertiary); font-size: 0.8rem;">Units</div>
+                            </div>
+                            <div style="padding: 20px; background: var(--bg-glass); border-radius: 16px; border: 1px solid var(--border-glass);">
+                                <div style="font-size: 1.5rem; font-weight: 700;">${this.inventoryData.finishedProductTypes}</div>
+                                <div style="color: var(--text-tertiary); font-size: 0.8rem;">Types</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Top Materials by Value -->
             ${this.renderTopMaterials()}
-            
-            <!-- Quality Metrics -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Quality Metrics</h3>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem;">
-                    <div style="text-align: center; padding: 1.5rem; background: rgba(75, 174, 254, 0.1); border-radius: 12px;">
-                        <div style="font-size: 2rem; font-weight: 700; color: #4facfe; margin-bottom: 0.5rem;">${this.dashboardData.qualityPassRate}%</div>
-                        <div style="color: var(--text-secondary);">Pass Rate</div>
-                    </div>
-                    <div style="text-align: center; padding: 1.5rem; background: rgba(255, 107, 107, 0.1); border-radius: 12px;">
-                        <div style="font-size: 2rem; font-weight: 700; color: #ff6b6b; margin-bottom: 0.5rem;">${this.dashboardData.qualityIssuesCount}</div>
-                        <div style="color: var(--text-secondary);">Quality Issues</div>
-                    </div>
-                    <div style="text-align: center; padding: 1.5rem; background: rgba(254, 225, 64, 0.1); border-radius: 12px;">
-                        <div style="font-size: 2rem; font-weight: 700; color: #fee140; margin-bottom: 0.5rem;">${this.dashboardData.lowStockCount}</div>
-                        <div style="color: var(--text-secondary);">Low Stock Alerts</div>
-                    </div>
-                </div>
-            </div>
         `;
     },
 
@@ -140,20 +154,20 @@ const Reports = {
         const stageEntries = Object.entries(stages);
 
         if (stageEntries.length === 0) {
-            return '<p style="color: var(--text-muted);">No active production to analyze</p>';
+            return '<p style="color: var(--text-tertiary); font-size: 0.9rem;">No active production to analyze</p>';
         }
 
         const total = stageEntries.reduce((sum, [_, count]) => sum + count, 0);
 
         return `
-            <div style="display: grid; gap: 1rem;">
+            <div style="display: grid; gap: 16px;">
                 ${stageEntries.map(([stage, count]) => {
             const percentage = ((count / total) * 100).toFixed(1);
             return `
                         <div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.85rem;">
                                 <span style="font-weight: 600; text-transform: capitalize;">${stage}</span>
-                                <span style="color: var(--text-secondary);">${count} items (${percentage}%)</span>
+                                <span style="color: var(--text-secondary); opacity: 0.8;">${count} items (${percentage}%)</span>
                             </div>
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: ${percentage}%"></div>
@@ -175,12 +189,13 @@ const Reports = {
         return `
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Top Materials by Value</h3>
+                    <h3 class="card-title">High-Value Inventory</h3>
                 </div>
                 <div class="table-container">
                     <table class="table">
                         <thead>
                             <tr>
+                                <th>Rank</th>
                                 <th>Material Name</th>
                                 <th>Total Value</th>
                             </tr>
@@ -188,15 +203,9 @@ const Reports = {
                         <tbody>
                             ${topMaterials.map((material, index) => `
                                 <tr>
-                                    <td>
-                                        <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                            <div style="width: 32px; height: 32px; border-radius: 8px; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-weight: 700;">
-                                                ${index + 1}
-                                            </div>
-                                            <strong>${material.name}</strong>
-                                        </div>
-                                    </td>
-                                    <td><strong>$${material.value}</strong></td>
+                                    <td style="width: 60px;"><span style="font-size: 0.85rem; font-weight: 700; color: var(--accent-primary);">#${index + 1}</span></td>
+                                    <td><strong style="color: var(--text-primary); font-size: 0.9rem;">${material.name}</strong></td>
+                                    <td><span style="font-weight: 600; color: var(--text-secondary);">$${material.value.toLocaleString()}</span></td>
                                 </tr>
                             `).join('')}
                         </tbody>

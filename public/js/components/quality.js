@@ -50,10 +50,6 @@ const Quality = {
         if (this.qualityChecks.length === 0) {
             listContainer.innerHTML = `
                 <div class="empty-state">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                    </svg>
                     <h3>No Quality Checks</h3>
                     <p>Record your first quality inspection</p>
                 </div>
@@ -68,7 +64,7 @@ const Quality = {
                         <tr>
                             <th>Item Reference</th>
                             <th>Inspector</th>
-                            <th>Inspection Date</th>
+                            <th>Date & Time</th>
                             <th>Parameters</th>
                             <th>Status</th>
                             <th>Remarks</th>
@@ -84,19 +80,19 @@ const Quality = {
 
     renderCheckRow(check) {
         const statusBadge = check.status === 'pass'
-            ? '<span class="badge badge-success">✓ Pass</span>'
-            : '<span class="badge badge-danger">✗ Fail</span>';
+            ? '<span class="badge badge-success">Pass</span>'
+            : '<span class="badge badge-danger">Fail</span>';
 
         const inspectionDate = App.formatDateTime(check.inspectionDate);
 
         return `
             <tr>
-                <td><strong>${check.itemReference || 'N/A'}</strong></td>
-                <td>${check.inspector || 'Unknown'}</td>
-                <td>${inspectionDate}</td>
-                <td>${check.parameters || 'Standard check'}</td>
+                <td><strong style="color: var(--text-primary);">${check.itemReference || 'N/A'}</strong></td>
+                <td><span style="font-size: 0.85rem;">${check.inspector || 'Unknown'}</span></td>
+                <td><span style="font-size: 0.8rem; color: var(--text-tertiary);">${inspectionDate}</span></td>
+                <td><span style="font-size: 0.85rem;">${check.parameters || 'Standard'}</span></td>
                 <td>${statusBadge}</td>
-                <td>${check.remarks || '-'}</td>
+                <td><span style="font-size: 0.85rem; opacity: 0.8;">${check.remarks || '—'}</span></td>
             </tr>
         `;
     },
@@ -105,36 +101,36 @@ const Quality = {
         const content = `
             <form id="quality-form">
                 <div class="form-group">
-                    <label class="form-label">Item Reference *</label>
-                    <input type="text" class="form-input" id="quality-item" required placeholder="Batch number or product SKU">
+                    <label class="form-label">Item Reference</label>
+                    <input type="text" class="form-input" id="quality-item" required placeholder="Batch number or SKU">
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Inspector Name *</label>
-                    <input type="text" class="form-input" id="quality-inspector" required>
+                    <label class="form-label">Inspector Name</label>
+                    <input type="text" class="form-input" id="quality-inspector" required placeholder="Full Name">
                 </div>
                 
                 <div class="form-group">
                     <label class="form-label">Parameters Checked</label>
-                    <input type="text" class="form-input" id="quality-parameters" placeholder="e.g., Dimensions, Surface finish, Hardness">
+                    <input type="text" class="form-input" id="quality-parameters" placeholder="e.g. Dimensions, Finish, Hardness">
                 </div>
                 
                 <div class="form-group">
                     <label class="form-label">Test Results</label>
-                    <textarea class="form-textarea" id="quality-results" placeholder="Detailed test results and measurements"></textarea>
+                    <textarea class="form-textarea" id="quality-results" placeholder="Detailed measurements..." style="min-height: 80px;"></textarea>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Status *</label>
+                    <label class="form-label">Inspection Status</label>
                     <select class="form-select" id="quality-status" required>
-                        <option value="pass">Pass ✓</option>
-                        <option value="fail">Fail ✗</option>
+                        <option value="pass">Pass</option>
+                        <option value="fail">Fail</option>
                     </select>
                 </div>
                 
                 <div class="form-group">
                     <label class="form-label">Remarks</label>
-                    <textarea class="form-textarea" id="quality-remarks" placeholder="Additional notes or corrective actions"></textarea>
+                    <textarea class="form-textarea" id="quality-remarks" placeholder="Additional notes..." style="min-height: 80px;"></textarea>
                 </div>
             </form>
         `;

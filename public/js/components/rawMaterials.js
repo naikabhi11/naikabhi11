@@ -44,9 +44,6 @@ const RawMaterials = {
         if (this.materials.length === 0) {
             listContainer.innerHTML = `
                 <div class="empty-state">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                    </svg>
                     <h3>No Materials Found</h3>
                     <p>Add your first raw material to get started</p>
                 </div>
@@ -62,9 +59,8 @@ const RawMaterials = {
                             <th>Name</th>
                             <th>Type</th>
                             <th>Quantity</th>
-                            <th>Unit</th>
                             <th>Supplier</th>
-                            <th>Cost/Unit</th>
+                            <th>Cost</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -85,20 +81,21 @@ const RawMaterials = {
 
         return `
             <tr>
-                <td><strong>${material.name}</strong></td>
-                <td>${material.type || 'N/A'}</td>
-                <td>${material.quantity}</td>
-                <td>${material.unit}</td>
-                <td>${material.supplier || 'N/A'}</td>
+                <td><strong style="color: var(--text-primary);">${material.name}</strong></td>
+                <td><span style="font-size: 0.8rem; opacity: 0.8;">${material.type || 'N/A'}</span></td>
+                <td>${material.quantity} <span style="font-size: 0.8rem; color: var(--text-tertiary);">${material.unit}</span></td>
+                <td>${material.supplier || '—'}</td>
                 <td>$${material.costPerUnit ? material.costPerUnit.toFixed(2) : '0.00'}</td>
                 <td>${statusBadge}</td>
                 <td>
-                    <button class="btn btn-sm btn-secondary" onclick="RawMaterials.showEditModal('${material._id}')">
-                        Edit
-                    </button>
-                    <button class="btn btn-sm btn-danger" onclick="RawMaterials.deleteMaterial('${material._id}')">
-                        Delete
-                    </button>
+                    <div class="flex gap-1">
+                        <button class="btn btn-secondary" style="padding: 4px 10px;" onclick="RawMaterials.showEditModal('${material._id}')">
+                            Edit
+                        </button>
+                        <button class="btn btn-danger" style="padding: 4px 10px; background: rgba(255, 59, 48, 0.1); color: var(--accent-danger);" onclick="RawMaterials.deleteMaterial('${material._id}')">
+                            Delete
+                        </button>
+                    </div>
                 </td>
             </tr>
         `;
@@ -108,12 +105,12 @@ const RawMaterials = {
         const content = `
             <form id="material-form">
                 <div class="form-group">
-                    <label class="form-label">Material Name *</label>
-                    <input type="text" class="form-input" id="material-name" required>
+                    <label class="form-label">Material Name</label>
+                    <input type="text" class="form-input" id="material-name" placeholder="e.g. Aluminum 6061" required>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Type</label>
+                    <label class="form-label">Material Type</label>
                     <select class="form-select" id="material-type">
                         <option value="Metal">Metal</option>
                         <option value="Plastic">Plastic</option>
@@ -123,14 +120,14 @@ const RawMaterials = {
                     </select>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                     <div class="form-group">
-                        <label class="form-label">Quantity *</label>
+                        <label class="form-label">Quantity</label>
                         <input type="number" class="form-input" id="material-quantity" required min="0" step="0.01">
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Unit *</label>
+                        <label class="form-label">Unit</label>
                         <select class="form-select" id="material-unit">
                             <option value="kg">Kilograms (kg)</option>
                             <option value="lbs">Pounds (lbs)</option>
@@ -143,17 +140,17 @@ const RawMaterials = {
                 
                 <div class="form-group">
                     <label class="form-label">Supplier</label>
-                    <input type="text" class="form-input" id="material-supplier">
+                    <input type="text" class="form-input" id="material-supplier" placeholder="Optional">
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                     <div class="form-group">
-                        <label class="form-label">Cost Per Unit ($)</label>
+                        <label class="form-label">Cost/Unit ($)</label>
                         <input type="number" class="form-input" id="material-cost" min="0" step="0.01">
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Minimum Stock Level</label>
+                        <label class="form-label">Min Stock Level</label>
                         <input type="number" class="form-input" id="material-min-stock" min="0" step="0.01">
                     </div>
                 </div>
@@ -172,12 +169,12 @@ const RawMaterials = {
                 <input type="hidden" id="material-id" value="${material._id}">
                 
                 <div class="form-group">
-                    <label class="form-label">Material Name *</label>
+                    <label class="form-label">Material Name</label>
                     <input type="text" class="form-input" id="material-name" value="${material.name}" required>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Type</label>
+                    <label class="form-label">Material Type</label>
                     <select class="form-select" id="material-type">
                         <option value="Metal" ${material.type === 'Metal' ? 'selected' : ''}>Metal</option>
                         <option value="Plastic" ${material.type === 'Plastic' ? 'selected' : ''}>Plastic</option>
@@ -187,14 +184,14 @@ const RawMaterials = {
                     </select>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                     <div class="form-group">
-                        <label class="form-label">Quantity *</label>
+                        <label class="form-label">Quantity</label>
                         <input type="number" class="form-input" id="material-quantity" value="${material.quantity}" required min="0" step="0.01">
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Unit *</label>
+                        <label class="form-label">Unit</label>
                         <select class="form-select" id="material-unit">
                             <option value="kg" ${material.unit === 'kg' ? 'selected' : ''}>Kilograms (kg)</option>
                             <option value="lbs" ${material.unit === 'lbs' ? 'selected' : ''}>Pounds (lbs)</option>
@@ -210,14 +207,14 @@ const RawMaterials = {
                     <input type="text" class="form-input" id="material-supplier" value="${material.supplier || ''}">
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                     <div class="form-group">
-                        <label class="form-label">Cost Per Unit ($)</label>
+                        <label class="form-label">Cost/Unit ($)</label>
                         <input type="number" class="form-input" id="material-cost" value="${material.costPerUnit || 0}" min="0" step="0.01">
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Minimum Stock Level</label>
+                        <label class="form-label">Min Stock Level</label>
                         <input type="number" class="form-input" id="material-min-stock" value="${material.minimumStockLevel || 0}" min="0" step="0.01">
                     </div>
                 </div>

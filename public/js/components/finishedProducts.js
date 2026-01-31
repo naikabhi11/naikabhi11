@@ -44,10 +44,6 @@ const FinishedProducts = {
         if (this.products.length === 0) {
             listContainer.innerHTML = `
                 <div class="empty-state">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M12 6v6l4 2"></path>
-                    </svg>
                     <h3>No Finished Products</h3>
                     <p>Complete production batches to add finished products</p>
                 </div>
@@ -60,12 +56,11 @@ const FinishedProducts = {
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Product Name</th>
-                            <th>SKU</th>
+                            <th>Product</th>
+                            <th>SKU / Batch</th>
                             <th>Quantity</th>
-                            <th>Batch Number</th>
                             <th>Mfg. Date</th>
-                            <th>Quality Status</th>
+                            <th>Quality</th>
                             <th>Location</th>
                             <th>Actions</th>
                         </tr>
@@ -89,20 +84,20 @@ const FinishedProducts = {
 
         return `
             <tr>
-                <td><strong>${product.name}</strong></td>
-                <td>${product.sku || 'N/A'}</td>
+                <td><strong style="color: var(--text-primary);">${product.name}</strong></td>
+                <td>
+                    <div style="font-size: 0.85rem;">${product.sku || '—'}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-tertiary);">#${product.batchNumber || '—'}</div>
+                </td>
                 <td>${product.quantity || 0}</td>
-                <td>${product.batchNumber || 'N/A'}</td>
                 <td>${mfgDate}</td>
                 <td>${qualityBadge}</td>
-                <td>${product.location || 'Warehouse'}</td>
+                <td><span style="font-size: 0.85rem; opacity: 0.8;">${product.location || 'Warehouse'}</span></td>
                 <td>
-                    <button class="btn btn-sm btn-secondary" onclick="FinishedProducts.showEditModal('${product._id}')">
-                        Edit
-                    </button>
-                    <button class="btn btn-sm btn-danger" onclick="FinishedProducts.deleteProduct('${product._id}')">
-                        Delete
-                    </button>
+                    <div class="flex gap-1">
+                        <button class="btn btn-secondary" style="padding: 4px 10px;" onclick="FinishedProducts.showEditModal('${product._id}')">Edit</button>
+                        <button class="btn btn-danger" style="padding: 4px 10px; background: rgba(255, 59, 48, 0.1); color: var(--accent-danger);" onclick="FinishedProducts.deleteProduct('${product._id}')">Delete</button>
+                    </div>
                 </td>
             </tr>
         `;
@@ -112,23 +107,23 @@ const FinishedProducts = {
         const content = `
             <form id="product-form">
                 <div class="form-group">
-                    <label class="form-label">Product Name *</label>
-                    <input type="text" class="form-input" id="product-name" required>
+                    <label class="form-label">Product Name</label>
+                    <input type="text" class="form-input" id="product-name" placeholder="e.g. Precision Gear" required>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                     <div class="form-group">
-                        <label class="form-label">SKU *</label>
-                        <input type="text" class="form-input" id="product-sku" required>
+                        <label class="form-label">SKU</label>
+                        <input type="text" class="form-input" id="product-sku" placeholder="PF-1234" required>
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Quantity *</label>
+                        <label class="form-label">Quantity</label>
                         <input type="number" class="form-input" id="product-quantity" min="1" value="1" required>
                     </div>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                     <div class="form-group">
                         <label class="form-label">Batch Number</label>
                         <input type="text" class="form-input" id="product-batch">
@@ -140,7 +135,7 @@ const FinishedProducts = {
                     </div>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                     <div class="form-group">
                         <label class="form-label">Quality Status</label>
                         <select class="form-select" id="product-quality">
@@ -158,7 +153,7 @@ const FinishedProducts = {
                 
                 <div class="form-group">
                     <label class="form-label">Specifications</label>
-                    <textarea class="form-textarea" id="product-specs"></textarea>
+                    <textarea class="form-textarea" id="product-specs" style="min-height: 80px;"></textarea>
                 </div>
             </form>
         `;
@@ -179,23 +174,23 @@ const FinishedProducts = {
                 <input type="hidden" id="product-id" value="${product._id}">
                 
                 <div class="form-group">
-                    <label class="form-label">Product Name *</label>
+                    <label class="form-label">Product Name</label>
                     <input type="text" class="form-input" id="product-name" value="${product.name}" required>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                     <div class="form-group">
-                        <label class="form-label">SKU *</label>
+                        <label class="form-label">SKU</label>
                         <input type="text" class="form-input" id="product-sku" value="${product.sku || ''}" required>
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Quantity *</label>
+                        <label class="form-label">Quantity</label>
                         <input type="number" class="form-input" id="product-quantity" value="${product.quantity || 1}" min="1" required>
                     </div>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                     <div class="form-group">
                         <label class="form-label">Batch Number</label>
                         <input type="text" class="form-input" id="product-batch" value="${product.batchNumber || ''}">
@@ -207,7 +202,7 @@ const FinishedProducts = {
                     </div>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                     <div class="form-group">
                         <label class="form-label">Quality Status</label>
                         <select class="form-select" id="product-quality">
@@ -225,7 +220,7 @@ const FinishedProducts = {
                 
                 <div class="form-group">
                     <label class="form-label">Specifications</label>
-                    <textarea class="form-textarea" id="product-specs">${product.specifications || ''}</textarea>
+                    <textarea class="form-textarea" id="product-specs" style="min-height: 80px;">${product.specifications || ''}</textarea>
                 </div>
             </form>
         `;

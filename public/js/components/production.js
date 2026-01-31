@@ -48,9 +48,6 @@ const Production = {
         if (this.wipItems.length === 0) {
             listContainer.innerHTML = `
                 <div class="empty-state">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-                    </svg>
                     <h3>No Active Production</h3>
                     <p>Start a new production batch to begin tracking</p>
                 </div>
@@ -59,7 +56,7 @@ const Production = {
         }
 
         listContainer.innerHTML = `
-            <div style="display: grid; gap: 1.5rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;">
                 ${this.wipItems.map(item => this.renderWIPCard(item)).join('')}
             </div>
         `;
@@ -70,61 +67,44 @@ const Production = {
         const startDate = App.formatDate(item.startDate);
 
         return `
-            <div class="card" style="margin: 0;">
-                <div class="card-header">
-                    <div>
-                        <h3 style="margin: 0; font-size: 1.25rem;">Batch #${item.batchNumber}</h3>
-                        <p style="margin: 0.25rem 0 0; color: var(--text-secondary); font-size: 0.9rem;">
+            <div class="card" style="margin: 0; display: flex; flex-direction: column;">
+                <div class="card-header" style="align-items: flex-start; margin-bottom: 20px;">
+                    <div style="flex: 1;">
+                        <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700;">Batch #${item.batchNumber}</h3>
+                        <p style="margin: 4px 0 0; color: var(--text-tertiary); font-size: 0.85rem;">
                             ${item.processName || 'Unknown Process'}
                         </p>
                     </div>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <button class="btn btn-sm btn-secondary" onclick="Production.showEditModal('${item._id}')">
-                            Update
-                        </button>
-                        <button class="btn btn-sm btn-success" onclick="Production.completeProduction('${item._id}')">
-                            Complete
-                        </button>
-                        <button class="btn btn-sm btn-danger" onclick="Production.cancelProduction('${item._id}')">
-                            Cancel
-                        </button>
-                    </div>
                 </div>
                 
-                <div style="margin-bottom: 1.5rem;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <span style="color: var(--text-secondary);">Progress</span>
-                        <span style="font-weight: 600;">${progress}%</span>
+                <div style="margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem;">
+                        <span style="color: var(--text-secondary);">${item.currentStage || 'Stage'}</span>
+                        <span style="font-weight: 600; color: var(--accent-primary);">${progress}%</span>
                     </div>
                     <div class="progress-bar">
                         <div class="progress-fill" style="width: ${progress}%"></div>
                     </div>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; font-size: 0.85rem;">
                     <div>
-                        <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem;">Current Stage</p>
-                        <p style="margin: 0.25rem 0 0; font-weight: 600;">${item.currentStage || 'Not specified'}</p>
+                        <p style="margin: 0; color: var(--text-tertiary); font-size: 0.75rem; text-transform: uppercase;">Operator</p>
+                        <p style="margin: 4px 0 0; font-weight: 500;">${item.assignedOperator || 'Unassigned'}</p>
                     </div>
                     <div>
-                        <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem;">Operator</p>
-                        <p style="margin: 0.25rem 0 0; font-weight: 600;">${item.assignedOperator || 'Unassigned'}</p>
-                    </div>
-                    <div>
-                        <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem;">Start Date</p>
-                        <p style="margin: 0.25rem 0 0; font-weight: 600;">${startDate}</p>
-                    </div>
-                    <div>
-                        <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem;">Quantity</p>
-                        <p style="margin: 0.25rem 0 0; font-weight: 600;">${item.quantity || 'N/A'}</p>
+                        <p style="margin: 0; color: var(--text-tertiary); font-size: 0.75rem; text-transform: uppercase;">Start Date</p>
+                        <p style="margin: 4px 0 0; font-weight: 500;">${startDate}</p>
                     </div>
                 </div>
                 
-                ${item.notes ? `
-                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(102, 126, 234, 0.1); border-radius: 8px;">
-                        <p style="margin: 0; font-size: 0.9rem;"><strong>Notes:</strong> ${item.notes}</p>
+                <div style="padding-top: 20px; border-top: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center;">
+                    <div class="flex gap-1" style="flex-wrap: wrap;">
+                        <button class="btn btn-secondary" style="padding: 4px 10px;" onclick="Production.showEditModal('${item._id}')">Update</button>
+                        <button class="btn btn-success" style="padding: 4px 10px; background: rgba(52, 199, 89, 0.1); color: var(--accent-success); border: 1px solid rgba(52, 199, 89, 0.2);" onclick="Production.completeProduction('${item._id}')">Complete</button>
                     </div>
-                ` : ''}
+                    <button class="btn btn-danger" style="padding: 4px 10px; background: transparent; border-color: transparent; color: var(--text-tertiary);" onclick="Production.cancelProduction('${item._id}')">Cancel</button>
+                </div>
             </div>
         `;
     },
