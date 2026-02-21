@@ -1,5 +1,7 @@
+import { Core } from '../core.js';
+
 // Quality Control Component
-const Quality = {
+export const Quality = {
     qualityChecks: [],
     wipItems: [],
     finishedProducts: [],
@@ -35,9 +37,9 @@ const Quality = {
     async loadData() {
         try {
             [this.qualityChecks, this.wipItems, this.finishedProducts] = await Promise.all([
-                App.fetchAPI('/quality-checks'),
-                App.fetchAPI('/wip'),
-                App.fetchAPI('/finished-products')
+                Core.fetchAPI('/quality-checks'),
+                Core.fetchAPI('/wip'),
+                Core.fetchAPI('/finished-products')
             ]);
         } catch (error) {
             console.error('Error loading quality data:', error);
@@ -83,7 +85,7 @@ const Quality = {
             ? '<span class="badge badge-success">Pass</span>'
             : '<span class="badge badge-danger">Fail</span>';
 
-        const inspectionDate = App.formatDateTime(check.inspectionDate);
+        const inspectionDate = Core.formatDateTime(check.inspectionDate);
 
         return `
             <tr>
@@ -135,7 +137,7 @@ const Quality = {
             </form>
         `;
 
-        App.showModal('Record Quality Inspection', content, () => this.saveCheck());
+        Core.showModal('Record Quality Inspection', content, () => this.saveCheck());
     },
 
     async saveCheck() {
@@ -149,17 +151,17 @@ const Quality = {
         };
 
         try {
-            await App.fetchAPI('/quality-checks', {
+            await Core.fetchAPI('/quality-checks', {
                 method: 'POST',
                 body: JSON.stringify(data)
             });
 
-            App.showNotification('Quality check recorded successfully', 'info');
-            App.closeModal();
+            Core.showNotification('Quality check recorded successfully', 'info');
+            Core.closeModal();
             await this.loadData();
             this.renderList();
         } catch (error) {
-            App.showNotification('Error recording quality check', 'danger');
+            Core.showNotification('Error recording quality check', 'danger');
         }
     }
 };

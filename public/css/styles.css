@@ -44,6 +44,16 @@
     -webkit-font-smoothing: antialiased;
 }
 
+.logo-stop-start {
+    stop-color: #FFEA00;
+    stop-opacity: 1;
+}
+
+.logo-stop-end {
+    stop-color: #FF8C00;
+    stop-opacity: 1;
+}
+
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background: var(--bg-main);
@@ -68,8 +78,8 @@ body {
 .sidebar {
     width: 260px;
     background: var(--bg-sidebar);
-    backdrop-filter: var(--blur-sidebar);
     -webkit-backdrop-filter: var(--blur-sidebar);
+    backdrop-filter: var(--blur-sidebar);
     border: 1px solid var(--border-glass);
     border-radius: var(--radius-main);
     padding: 24px 12px;
@@ -143,8 +153,8 @@ body {
 .main-content {
     flex: 1;
     background: var(--bg-card);
-    backdrop-filter: var(--blur-card);
     -webkit-backdrop-filter: var(--blur-card);
+    backdrop-filter: var(--blur-card);
     border: 1px solid var(--border-glass);
     border-radius: var(--radius-main);
     padding: 32px;
@@ -406,8 +416,8 @@ body {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -607,6 +617,6 @@ body {
     }
 
     .main-content {
-        min-height: auto;
+        min-height: initial;
     }
 }

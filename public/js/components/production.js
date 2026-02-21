@@ -1,5 +1,7 @@
+import { Core } from '../core.js';
+
 // Production (Work in Progress) Component
-const Production = {
+export const Production = {
     wipItems: [],
     processes: [],
 
@@ -34,8 +36,8 @@ const Production = {
     async loadData() {
         try {
             [this.wipItems, this.processes] = await Promise.all([
-                App.fetchAPI('/wip'),
-                App.fetchAPI('/processes')
+                Core.fetchAPI('/wip'),
+                Core.fetchAPI('/processes')
             ]);
         } catch (error) {
             console.error('Error loading WIP data:', error);
@@ -64,7 +66,7 @@ const Production = {
 
     renderWIPCard(item) {
         const progress = item.progress || 0;
-        const startDate = App.formatDate(item.startDate);
+        const startDate = Core.formatDate(item.startDate);
 
         return `
             <div class="card" style="margin: 0; display: flex; flex-direction: column;">
@@ -162,7 +164,7 @@ const Production = {
             </form>
         `;
 
-        App.showModal('Start New Production', content, () => this.saveWIP());
+        Core.showModal('Start New Production', content, () => this.saveWIP());
     },
 
     showEditModal(id) {
@@ -206,7 +208,7 @@ const Production = {
             </form>
         `;
 
-        App.showModal('Update Production Progress', content, () => this.saveWIP());
+        Core.showModal('Update Production Progress', content, () => this.saveWIP());
     },
 
     async saveWIP() {
@@ -232,24 +234,24 @@ const Production = {
 
         try {
             if (id) {
-                await App.fetchAPI(`/wip/${id}`, {
+                await Core.fetchAPI(`/wip/${id}`, {
                     method: 'PUT',
                     body: JSON.stringify(data)
                 });
-                App.showNotification('Production updated successfully', 'info');
+                Core.showNotification('Production updated successfully', 'info');
             } else {
-                await App.fetchAPI('/wip', {
+                await Core.fetchAPI('/wip', {
                     method: 'POST',
                     body: JSON.stringify(data)
                 });
-                App.showNotification('Production started successfully', 'info');
+                Core.showNotification('Production started successfully', 'info');
             }
 
-            App.closeModal();
+            Core.closeModal();
             await this.loadData();
             this.renderList();
         } catch (error) {
-            App.showNotification('Error saving production', 'danger');
+            Core.showNotification('Error saving production', 'danger');
         }
     },
 
@@ -261,7 +263,7 @@ const Production = {
 
         try {
             // Create finished product
-            await App.fetchAPI('/finished-products', {
+            await Core.fetchAPI('/finished-products', {
                 method: 'POST',
                 body: JSON.stringify({
                     name: item.processName,
@@ -275,13 +277,13 @@ const Production = {
             });
 
             // Delete from WIP
-            await App.fetchAPI(`/wip/${id}`, { method: 'DELETE' });
+            await Core.fetchAPI(`/wip/${id}`, { method: 'DELETE' });
 
-            App.showNotification('Production completed successfully', 'info');
+            Core.showNotification('Production completed successfully', 'info');
             await this.loadData();
             this.renderList();
         } catch (error) {
-            App.showNotification('Error completing production', 'danger');
+            Core.showNotification('Error completing production', 'danger');
         }
     },
 
@@ -289,12 +291,12 @@ const Production = {
         if (!confirm('Are you sure you want to cancel this production?')) return;
 
         try {
-            await App.fetchAPI(`/wip/${id}`, { method: 'DELETE' });
-            App.showNotification('Production cancelled', 'info');
+            await Core.fetchAPI(`/wip/${id}`, { method: 'DELETE' });
+            Core.showNotification('Production cancelled', 'info');
             await this.loadData();
             this.renderList();
         } catch (error) {
-            App.showNotification('Error cancelling production', 'danger');
+            Core.showNotification('Error cancelling production', 'danger');
         }
     }
 };

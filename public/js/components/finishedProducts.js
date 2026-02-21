@@ -1,5 +1,7 @@
+import { Core } from '../core.js';
+
 // Finished Products Component
-const FinishedProducts = {
+export const FinishedProducts = {
     products: [],
 
     async render(container) {
@@ -32,7 +34,7 @@ const FinishedProducts = {
 
     async loadProducts() {
         try {
-            this.products = await App.fetchAPI('/finished-products');
+            this.products = await Core.fetchAPI('/finished-products');
         } catch (error) {
             console.error('Error loading products:', error);
         }
@@ -80,7 +82,7 @@ const FinishedProducts = {
             'pending': '<span class="badge badge-warning">Pending</span>'
         }[product.qualityStatus] || '<span class="badge badge-info">Unknown</span>';
 
-        const mfgDate = product.manufacturingDate ? App.formatDate(product.manufacturingDate) : 'N/A';
+        const mfgDate = product.manufacturingDate ? Core.formatDate(product.manufacturingDate) : 'N/A';
 
         return `
             <tr>
@@ -158,7 +160,7 @@ const FinishedProducts = {
             </form>
         `;
 
-        App.showModal('Add Finished Product', content, () => this.saveProduct());
+        Core.showModal('Add Finished Product', content, () => this.saveProduct());
     },
 
     showEditModal(id) {
@@ -225,7 +227,7 @@ const FinishedProducts = {
             </form>
         `;
 
-        App.showModal('Edit Finished Product', content, () => this.saveProduct());
+        Core.showModal('Edit Finished Product', content, () => this.saveProduct());
     },
 
     async saveProduct() {
@@ -243,24 +245,24 @@ const FinishedProducts = {
 
         try {
             if (id) {
-                await App.fetchAPI(`/finished-products/${id}`, {
+                await Core.fetchAPI(`/finished-products/${id}`, {
                     method: 'PUT',
                     body: JSON.stringify(data)
                 });
-                App.showNotification('Product updated successfully', 'info');
+                Core.showNotification('Product updated successfully', 'info');
             } else {
-                await App.fetchAPI('/finished-products', {
+                await Core.fetchAPI('/finished-products', {
                     method: 'POST',
                     body: JSON.stringify(data)
                 });
-                App.showNotification('Product added successfully', 'info');
+                Core.showNotification('Product added successfully', 'info');
             }
 
-            App.closeModal();
+            Core.closeModal();
             await this.loadProducts();
             this.renderList();
         } catch (error) {
-            App.showNotification('Error saving product', 'danger');
+            Core.showNotification('Error saving product', 'danger');
         }
     },
 
@@ -268,12 +270,12 @@ const FinishedProducts = {
         if (!confirm('Are you sure you want to delete this product?')) return;
 
         try {
-            await App.fetchAPI(`/finished-products/${id}`, { method: 'DELETE' });
-            App.showNotification('Product deleted successfully', 'info');
+            await Core.fetchAPI(`/finished-products/${id}`, { method: 'DELETE' });
+            Core.showNotification('Product deleted successfully', 'info');
             await this.loadProducts();
             this.renderList();
         } catch (error) {
-            App.showNotification('Error deleting product', 'danger');
+            Core.showNotification('Error deleting product', 'danger');
         }
     }
 };

@@ -1,5 +1,7 @@
+import { Core } from '../core.js';
+
 // Raw Materials Component
-const RawMaterials = {
+export const RawMaterials = {
     materials: [],
 
     async render(container) {
@@ -32,7 +34,7 @@ const RawMaterials = {
 
     async loadMaterials() {
         try {
-            this.materials = await App.fetchAPI('/raw-materials');
+            this.materials = await Core.fetchAPI('/raw-materials');
         } catch (error) {
             console.error('Error loading materials:', error);
         }
@@ -157,7 +159,7 @@ const RawMaterials = {
             </form>
         `;
 
-        App.showModal('Add Raw Material', content, () => this.saveMaterial());
+        Core.showModal('Add Raw Material', content, () => this.saveMaterial());
     },
 
     showEditModal(id) {
@@ -221,7 +223,7 @@ const RawMaterials = {
             </form>
         `;
 
-        App.showModal('Edit Raw Material', content, () => this.saveMaterial());
+        Core.showModal('Edit Raw Material', content, () => this.saveMaterial());
     },
 
     async saveMaterial() {
@@ -238,24 +240,24 @@ const RawMaterials = {
 
         try {
             if (id) {
-                await App.fetchAPI(`/raw-materials/${id}`, {
+                await Core.fetchAPI(`/raw-materials/${id}`, {
                     method: 'PUT',
                     body: JSON.stringify(data)
                 });
-                App.showNotification('Material updated successfully', 'info');
+                Core.showNotification('Material updated successfully', 'info');
             } else {
-                await App.fetchAPI('/raw-materials', {
+                await Core.fetchAPI('/raw-materials', {
                     method: 'POST',
                     body: JSON.stringify(data)
                 });
-                App.showNotification('Material added successfully', 'info');
+                Core.showNotification('Material added successfully', 'info');
             }
 
-            App.closeModal();
+            Core.closeModal();
             await this.loadMaterials();
             this.renderList();
         } catch (error) {
-            App.showNotification('Error saving material', 'danger');
+            Core.showNotification('Error saving material', 'danger');
         }
     },
 
@@ -263,12 +265,12 @@ const RawMaterials = {
         if (!confirm('Are you sure you want to delete this material?')) return;
 
         try {
-            await App.fetchAPI(`/raw-materials/${id}`, { method: 'DELETE' });
-            App.showNotification('Material deleted successfully', 'info');
+            await Core.fetchAPI(`/raw-materials/${id}`, { method: 'DELETE' });
+            Core.showNotification('Material deleted successfully', 'info');
             await this.loadMaterials();
             this.renderList();
         } catch (error) {
-            App.showNotification('Error deleting material', 'danger');
+            Core.showNotification('Error deleting material', 'danger');
         }
     }
 };

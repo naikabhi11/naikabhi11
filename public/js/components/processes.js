@@ -1,5 +1,7 @@
+import { Core } from '../core.js';
+
 // Manufacturing Processes Component
-const Processes = {
+export const Processes = {
     processes: [],
     rawMaterials: [],
 
@@ -34,8 +36,8 @@ const Processes = {
     async loadData() {
         try {
             [this.processes, this.rawMaterials] = await Promise.all([
-                App.fetchAPI('/processes'),
-                App.fetchAPI('/raw-materials')
+                Core.fetchAPI('/processes'),
+                Core.fetchAPI('/raw-materials')
             ]);
         } catch (error) {
             console.error('Error loading processes:', error);
@@ -140,7 +142,7 @@ const Processes = {
             </form>
         `;
 
-        App.showModal('Add Manufacturing Process', content, () => this.saveProcess());
+        Core.showModal('Add Manufacturing Process', content, () => this.saveProcess());
         setTimeout(() => this.addMaterialRow(), 100);
     },
 
@@ -226,7 +228,7 @@ const Processes = {
             </form>
         `;
 
-        App.showModal('Edit Manufacturing Process', content, () => this.saveProcess());
+        Core.showModal('Edit Manufacturing Process', content, () => this.saveProcess());
 
         setTimeout(() => {
             const materials = process.inputMaterials || [];
@@ -270,24 +272,24 @@ const Processes = {
 
         try {
             if (id) {
-                await App.fetchAPI(`/processes/${id}`, {
+                await Core.fetchAPI(`/processes/${id}`, {
                     method: 'PUT',
                     body: JSON.stringify(data)
                 });
-                App.showNotification('Process updated successfully', 'info');
+                Core.showNotification('Process updated successfully', 'info');
             } else {
-                await App.fetchAPI('/processes', {
+                await Core.fetchAPI('/processes', {
                     method: 'POST',
                     body: JSON.stringify(data)
                 });
-                App.showNotification('Process added successfully', 'info');
+                Core.showNotification('Process added successfully', 'info');
             }
 
-            App.closeModal();
+            Core.closeModal();
             await this.loadData();
             this.renderList();
         } catch (error) {
-            App.showNotification('Error saving process', 'danger');
+            Core.showNotification('Error saving process', 'danger');
         }
     },
 
@@ -295,12 +297,12 @@ const Processes = {
         if (!confirm('Are you sure you want to delete this process?')) return;
 
         try {
-            await App.fetchAPI(`/processes/${id}`, { method: 'DELETE' });
-            App.showNotification('Process deleted successfully', 'info');
+            await Core.fetchAPI(`/processes/${id}`, { method: 'DELETE' });
+            Core.showNotification('Process deleted successfully', 'info');
             await this.loadData();
             this.renderList();
         } catch (error) {
-            App.showNotification('Error deleting process', 'danger');
+            Core.showNotification('Error deleting process', 'danger');
         }
     }
 };

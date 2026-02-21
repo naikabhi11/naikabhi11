@@ -5,7 +5,11 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "frontend:dev": "vite",
+    "frontend:build": "vite build",
+    "frontend:preview": "vite preview",
+    "test": "cross-env NODE_ENV=test jest --detectOpenHandles"
   },
   "keywords": [
     "manufacturing",
@@ -19,7 +23,18 @@
     "@ngneat/falso": "^8.0.2",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
+    "dotenv": "^17.3.1",
     "express": "^4.18.2",
-    "mongodb": "^6.3.0"
+    "helmet": "^8.1.0",
+    "mongodb": "^6.3.0",
+    "mongoose": "^9.2.1",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "jest": "^30.2.0",
+    "mongodb-memory-server": "^11.0.1",
+    "supertest": "^7.2.2",
+    "vite": "^7.3.1"
   }
 }

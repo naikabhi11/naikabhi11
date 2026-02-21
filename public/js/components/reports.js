@@ -1,5 +1,7 @@
+import { Core } from '../core.js';
+
 // Reports and Analytics Component
-const Reports = {
+export const Reports = {
     dashboardData: null,
     productionData: null,
     inventoryData: null,
@@ -23,9 +25,9 @@ const Reports = {
     async loadData() {
         try {
             [this.dashboardData, this.productionData, this.inventoryData] = await Promise.all([
-                App.fetchAPI('/analytics/dashboard'),
-                App.fetchAPI('/analytics/production'),
-                App.fetchAPI('/analytics/inventory')
+                Core.fetchAPI('/analytics/dashboard'),
+                Core.fetchAPI('/analytics/production'),
+                Core.fetchAPI('/analytics/inventory')
             ]);
         } catch (error) {
             console.error('Error loading reports data:', error);
