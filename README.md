@@ -23,11 +23,10 @@ I specialize in **database performance tuning**, **cloud infrastructure**, and *
 ### ☁️ **Cloud Platforms**
 - AWS (EC2, RDS, VPC, S3, CloudWatch)
 - Linode
-- Azure
 - Cloud Architecture & Migration
 
 ### 📦 **Containerization & Orchestration**
-- Docker (Image creation, Container networking)
+- Podman, Cri-O (Image creation, Container networking)
 - Kubernetes (Deployments, StatefulSets, ConfigMaps, Persistent Volumes)
 - Container Registry management
 
@@ -35,11 +34,13 @@ I specialize in **database performance tuning**, **cloud infrastructure**, and *
 - Prometheus (Metrics collection, AlertManager)
 - Grafana (Dashboard creation, Data visualization)
 - PMM (Percona Monitoring and Management)
+- NewRelic
 - ELK Stack, Logging solutions
 
 ### 🔧 **Infrastructure as Code & Automation**
 - Terraform
 - Ansible
+- Jenkin
 - Shell/Bash scripting
 - CI/CD pipelines
 
@@ -47,7 +48,7 @@ I specialize in **database performance tuning**, **cloud infrastructure**, and *
 - **Bash/Shell** – System administration & automation
 - **SQL** – Advanced queries, stored procedures, optimization
 - **Python** – Scripting, data processing, automation
-- **C++** – Systems programming
+- **Golang**
 
 ### 🛠️ **DevOps & Tools**
 - Git & GitHub
@@ -64,6 +65,7 @@ I specialize in **database performance tuning**, **cloud infrastructure**, and *
 - Performance optimization and query analysis
 - Backup & disaster recovery strategies
 - Database migration and consolidation
+- Version Upgrade
 
 ✅ **Cloud Architecture**
 - AWS infrastructure design
